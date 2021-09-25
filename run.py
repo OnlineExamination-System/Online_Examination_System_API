@@ -22,6 +22,7 @@ elif app.config["ENV"] == "development":
 
 import resources.quiz.attempt as attempt
 api.add_resource(attempt.Questions,"/attempt")
+api.add_resource(attempt.Submission,"/submit")
 
 
 if __name__ == '__main__':

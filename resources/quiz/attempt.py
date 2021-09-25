@@ -3,7 +3,7 @@ from flask_restful import Resource,request
 import pymongo
 import uuid
 from datetime import datetime
-from common.email_service import EmailSend
+import ast
 
 class Questions(Resource):
     def get(self):
@@ -28,27 +28,30 @@ class Submission(Resource):
             selectCollection1 = selectDb["students"]
             selectCollection2 = selectDb["results"]
             try:
-                data = request.get_json()
                 student_id = "PR"+str(uuid.uuid4())
+                data = request.get_data()
+                dict_str = data.decode("UTF-8")
+                mydata = ast.literal_eval(dict_str)
                 student = {
                     "student_id": student_id,
-                    "name": data["name"],
-                    "email": data["email"],
-                    # "roll_no": data["roll_no"],
-                    # "class": data["class"]
+                    "name": mydata["name"],
+                    "email": mydata["email"],
+                    "roll_no": mydata["roll_no"],
+                    "class": mydata["class"]
                 }
                 result = {
                     "student_id": student_id,
                     "time" : datetime.now(),
-                    "marks": data["marks"]
+                    "marks": mydata["marks"]
                 }
                 y = selectCollection1.insert_one(student)
                 z = selectCollection2.insert_one(result)
 
                 if y.inserted_id and z.inserted_id:
+
                     return {"code": 201, "message": "Successfully Submitted your response"},201
 
             except Exception as e:
-                return {"code": 213, "message": "Fund Type Not inserted : " + str(e)}, 213
+                return {"code": 213, "message": "Submission not Successfull : " + str(e)}, 213
         except Exception as e:
             return {"code": 210, "message": "Failed to connect to Mongo DB : " + str(e)}, 210
