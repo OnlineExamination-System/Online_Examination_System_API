@@ -16,13 +16,13 @@ elif app.config["ENV"] == "development":
     app.config.from_object("config.DevelopmentConfig")
 
 
-# hello world api
-# import resources.sample.helloworld as hw
-# api.add_resource(hw.HelloWorld, '/')
 
 import resources.quiz.attempt as attempt
 api.add_resource(attempt.Questions,"/attempt")
 api.add_resource(attempt.Submission,"/submit")
+
+import resources.quiz.evaluation as eva
+api.add_resource(eva.Report,"/report")
 
 
 if __name__ == '__main__':
